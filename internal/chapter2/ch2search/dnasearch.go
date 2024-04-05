@@ -14,8 +14,6 @@ func binaryContains(gene Gene, key Codon) bool {
 	high := len(gene) - 1
 
 	for low <= high {
-		// d := float64(low+high) / 2.0
-		// mid := int(math.Floor(d))
 		mid := (low + high + 1) >> 1
 		if res := gene[mid].Compare(key); res < 0 {
 			low = mid + 1
