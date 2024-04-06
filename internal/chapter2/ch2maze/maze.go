@@ -2,6 +2,7 @@ package ch2maze
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"time"
 )
@@ -49,6 +50,11 @@ func (m *Maze) Successors(ml MazeLocation) (locations []MazeLocation) {
 
 func (m *Maze) GoalTest(ml MazeLocation) bool {
 	return m.goal.Equal(ml)
+}
+
+func (m *Maze) Heuristic(ml MazeLocation) float32 {
+	h := math.Abs(float64(ml.column)-float64(m.goal.column)) + math.Abs(float64(ml.row)-float64(m.goal.row))
+	return float32(h)
 }
 
 func (m *Maze) Mark(path []MazeLocation) {

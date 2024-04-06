@@ -7,7 +7,7 @@ import (
 	"github.com/fafadoboy/da-gosb/internal/chapter2/ch2maze"
 )
 
-func TestDfsBfs(t *testing.T) {
+func TestAlgoSearch(t *testing.T) {
 	algo := AlgoSearch[ch2maze.MazeLocation]{}
 
 	maze := ch2maze.NewMaze(10, 10, 0.2, ch2maze.NewMazeLocation(0, 0), ch2maze.NewMazeLocation(9, 9))
@@ -28,5 +28,14 @@ func TestDfsBfs(t *testing.T) {
 		maze.Clear(path)
 	} else {
 		fmt.Println("No solution found using breadth-first rearch")
+	}
+
+	if sol3 := algo.AStar(ch2maze.NewMazeLocation(0, 0), maze.GoalTest, maze.Successors, maze.Heuristic); sol3 != nil {
+		path := sol3.ToPath()
+		maze.Mark(path)
+		maze.Print()
+		maze.Clear(path)
+	} else {
+		fmt.Println("No solution found using a-star rearch")
 	}
 }
