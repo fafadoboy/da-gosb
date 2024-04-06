@@ -11,7 +11,7 @@ type MazeLocation struct {
 
 func (ml MazeLocation) Hash() string {
 	h := fnv.New32a()
-	h.Write([]byte(fmt.Sprintf("column:%d row:%d", ml.column, ml.row)))
+	h.Write([]byte(fmt.Sprintf("C%dR%d", ml.column, ml.row)))
 	// If your T type is more complex or doesn't implement fmt.Stringer,
 	// you might need a more sophisticated approach to generate a hash.
 	return fmt.Sprintf("%x", h.Sum32())

@@ -16,11 +16,11 @@ func (a *AlgoSearch[T]) DFS(initial T, GoalTest func(T) bool, successors func(T)
 	frontier := models.Stack[*models.Node[T]]{}
 	frontier.Init()
 
-	explored := models.Set[T]{}
+	explored := models.Set[string]{}
 	explored.Init()
 
 	frontier.Push(&models.Node[T]{State: initial})
-	explored.Insert(initial)
+	explored.Insert(initial.Hash())
 
 	for !frontier.Empty() {
 		currentNode := frontier.Pop()
@@ -29,10 +29,10 @@ func (a *AlgoSearch[T]) DFS(initial T, GoalTest func(T) bool, successors func(T)
 			return currentNode
 		}
 		for _, child := range successors(currentState) {
-			if explored.Has(child) {
+			if explored.Has(child.Hash()) {
 				continue
 			}
-			explored.Insert(child)
+			explored.Insert(child.Hash())
 			frontier.Push(&models.Node[T]{State: child, Parent: currentNode})
 		}
 	}
@@ -44,11 +44,11 @@ func (a *AlgoSearch[T]) BFS(initial T, GoalTest func(T) bool, successors func(T)
 	frontier := models.Queue[*models.Node[T]]{}
 	frontier.Init()
 
-	explored := models.Set[T]{}
+	explored := models.Set[string]{}
 	explored.Init()
 
 	frontier.Push(&models.Node[T]{State: initial})
-	explored.Insert(initial)
+	explored.Insert(initial.Hash())
 
 	for !frontier.Empty() {
 		currentNode := frontier.Pop()
@@ -57,10 +57,10 @@ func (a *AlgoSearch[T]) BFS(initial T, GoalTest func(T) bool, successors func(T)
 			return currentNode
 		}
 		for _, child := range successors(currentState) {
-			if explored.Has(child) {
+			if explored.Has(child.Hash()) {
 				continue
 			}
-			explored.Insert(child)
+			explored.Insert(child.Hash())
 			frontier.Push(&models.Node[T]{State: child, Parent: currentNode})
 		}
 	}
@@ -91,5 +91,6 @@ func (a *AlgoSearch[T]) AStar(initial T, GoalTest func(T) bool, successors func(
 			}
 		}
 	}
+
 	return nil
 }
