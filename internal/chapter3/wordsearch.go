@@ -6,18 +6,21 @@ import (
 )
 
 type WordSearchConstraint struct {
-	words []models.Cell
+	words []models.Node
 }
 
-func (c *WordSearchConstraint) Variables() []models.Cell {
+func (c *WordSearchConstraint) Variables() []models.Node {
 	return c.words
 }
 
-func (c *WordSearchConstraint) Satisfied(assignment map[string][]models.Cell) bool {
-	allLocations := utils.FlatMap[models.Cell](assignment)
-	return len(utils.Dedup[models.Cell](allLocations...)) == len(allLocations)
+func (c *WordSearchConstraint) Satisfied(assignment map[string]models.ListGL) bool {
+	allLocations := make(models.ListGL, 0)
+	for _, values := range assignment {
+		allLocations = append(allLocations, values...)
+	}
+	return len(utils.Dedup(allLocations...)) == len(allLocations)
 }
 
-func NewWordSearchConstraint(words []models.Cell) *WordSearchConstraint {
+func NewWordSearchConstraint(words ...models.Node) *WordSearchConstraint {
 	return &WordSearchConstraint{words: words}
 }

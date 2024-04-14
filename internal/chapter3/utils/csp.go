@@ -16,7 +16,7 @@ func cloneAssignment[D models.Clonable](assignment map[string]D) map[string]D {
 	return copy
 }
 
-type CSP[V models.Hashable, D models.HashableAndClonable] struct {
+type CSP[V models.Hashable, D models.Clonable] struct {
 	variables   []V
 	domains     map[string][]D
 	constraints map[string][]internalModels.Constraint[V, D]
@@ -75,7 +75,7 @@ func (o *CSP[V, D]) BacktrackingSearch(assignment map[string]D) map[string]D {
 	return nil
 }
 
-func NewCPS[V, D models.HashableAndClonable](variables []V, domains map[string][]D) (*CSP[V, D], error) {
+func NewCPS[V models.Hashable, D models.Clonable](variables []V, domains map[string][]D) (*CSP[V, D], error) {
 	var result *CSP[V, D]
 
 	for _, varialbe := range variables {
