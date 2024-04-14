@@ -4,12 +4,10 @@ import (
 	"container/heap"
 
 	"github.com/fafadoboy/da-gosb/internal/chapter2/models"
+	internalModels "github.com/fafadoboy/da-gosb/internal/models"
 )
 
-type Hashable interface {
-	Hash() string
-}
-type AlgoSearch[T Hashable] struct {
+type AlgoSearch[T internalModels.Hashable] struct {
 }
 
 func (a *AlgoSearch[T]) DFS(initial T, GoalTest func(T) bool, successors func(T) []T) *models.Node[T] {
