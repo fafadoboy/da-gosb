@@ -16,7 +16,7 @@ func TestMazeSearch(t *testing.T) {
 	if sol1 := algo.DFS(ch2maze.NewMazeLocation(0, 0), maze.GoalTest, maze.Successors); sol1 != nil {
 		path := sol1.ToPath()
 		maze.Mark(path)
-		maze.Print()
+		maze.Print("DFS")
 		maze.Clear(path)
 	} else {
 		fmt.Println("No solution found using depth-first rearch")
@@ -25,7 +25,7 @@ func TestMazeSearch(t *testing.T) {
 	if sol2 := algo.BFS(ch2maze.NewMazeLocation(0, 0), maze.GoalTest, maze.Successors); sol2 != nil {
 		path := sol2.ToPath()
 		maze.Mark(path)
-		maze.Print()
+		maze.Print("BFS")
 		maze.Clear(path)
 	} else {
 		fmt.Println("No solution found using breadth-first rearch")
@@ -34,7 +34,7 @@ func TestMazeSearch(t *testing.T) {
 	if sol3 := algo.AStar(ch2maze.NewMazeLocation(0, 0), maze.GoalTest, maze.Successors, maze.Heuristic); sol3 != nil {
 		path := sol3.ToPath()
 		maze.Mark(path)
-		maze.Print()
+		maze.Print("AStar")
 		maze.Clear(path)
 	} else {
 		fmt.Println("No solution found using a-star rearch")

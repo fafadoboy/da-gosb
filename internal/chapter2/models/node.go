@@ -1,5 +1,7 @@
 package models
 
+import "github.com/samber/lo"
+
 type Node[T any] struct {
 	State     T
 	Parent    *Node[T]
@@ -19,5 +21,5 @@ func (n *Node[T]) ToPath() (path []T) {
 		node = node.Parent
 		path = append(path, node.State)
 	}
-	return path[:len(path)-1]
+	return lo.Reverse[T](path)
 }

@@ -71,7 +71,11 @@ func (m *Maze) Clear(path []MazeLocation) {
 	m.setStartGoal()
 }
 
-func (m *Maze) Print() {
+func (m *Maze) Print(argsStar ...string) {
+	for _, arg := range argsStar {
+		fmt.Println(arg)
+	}
+
 	fmt.Println("\nMAZE\n=====")
 	for i := 0; i < len(m.grid); i++ {
 		for j := 0; j < len(m.grid[i]); j++ {
