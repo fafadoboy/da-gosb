@@ -7,18 +7,6 @@ import (
 	"github.com/samber/lo"
 )
 
-type Edge struct {
-	u, v int
-}
-
-func (e *Edge) Reversed() Edge {
-	return Edge{u: e.v, v: e.u}
-}
-
-func (e *Edge) Hash() string {
-	return fmt.Sprintf("%d -> %d", e.u, e.v)
-}
-
 type Graph[V comparable] struct {
 	vertices []V
 	edges    [][]Edge
@@ -47,14 +35,14 @@ func (g *Graph[V]) AddEdge(edge Edge) {
 	g.edges[edge.v] = append(g.edges[edge.v], edge.Reversed())
 }
 
-func (g *Graph[V]) AddEdgeByIndeces(u, v int) {
+func (g *Graph[V]) AddEdgeByIndices(u, v int) {
 	g.AddEdge(Edge{u, v})
 }
 
 func (g *Graph[V]) AddEdgeByVertices(first, second V) {
 	_, u, _ := lo.FindIndexOf[V](g.vertices, func(item V) bool { return item == first })
 	_, v, _ := lo.FindIndexOf[V](g.vertices, func(item V) bool { return item == second })
-	g.AddEdgeByIndeces(u, v)
+	g.AddEdgeByIndices(u, v)
 }
 
 func (g *Graph[V]) VertexAt(index int) V {
