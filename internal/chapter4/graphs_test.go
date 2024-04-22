@@ -7,6 +7,7 @@ import (
 	utilsCh2 "github.com/fafadoboy/da-gosb/internal/chapter2/utils"
 	"github.com/fafadoboy/da-gosb/internal/chapter4/models"
 	"github.com/fafadoboy/da-gosb/internal/chapter4/utils"
+	"github.com/samber/lo"
 )
 
 func createCityGraph() *models.Graph[models.City, float32] {
@@ -72,6 +73,8 @@ func createCityWeightedGraph() *models.Graph[models.City, float32] {
 	return weightedCityGraph
 }
 
+func converter(f float32) float32 { return f }
+
 func TestGraphCreation(t *testing.T) {
 	cityGraph := createCityGraph()
 	fmt.Println(cityGraph.ToString())
@@ -95,12 +98,49 @@ func TestGraphsShortestPath(t *testing.T) {
 	fmt.Println(cityGraph.ToString())
 
 	algo := utils.AlgoGraph[models.City, float32]{}
-	if sol := algo.MST(cityGraph, 0); sol != nil {
+	if sol := algo.MST(cityGraph, 0, converter); sol != nil {
+		var sum float32
+
 		for _, edge := range sol {
-			fmt.Printf("%v (%v) > %v\n", cityGraph.VertexAt(edge.U), edge.Meta["weight"], cityGraph.VertexAt(edge.V))
+			weight := converter(edge.Meta["weight"])
+			fmt.Printf("%v (%v) > %v\n", cityGraph.VertexAt(edge.U), weight, cityGraph.VertexAt(edge.V))
+			sum += weight
 		}
+		fmt.Printf("Total Weight: %v\n", sum)
 		// fmt.Printf("Path from %s to %s:\n%v", models.BOSTON, models.MIAMI, path)
 	} else {
 		fmt.Println("No solution found using MST")
 	}
+}
+
+func TestGraphsShortestPathWithDjakstra(t *testing.T) {
+	cityGraph := createCityWeightedGraph()
+	fmt.Println(cityGraph.ToString())
+
+	algo := utils.AlgoGraph[models.City, float32]{}
+	distances, path := algo.Dijkstra(cityGraph, models.LOSANGELES, converter)
+
+	// display the results
+	lo.ForEach(distances, func(item *float32, index int) {
+		fmt.Printf("%s : %v\n", cityGraph.VertexAt(index), *item)
+	})
+	fmt.Println()
+
+	start := cityGraph.IndexOf(models.LOSANGELES)
+	end := cityGraph.IndexOf(models.BOSTON)
+	edgesPath := make([]*models.Edge[float32], 0)
+
+	e := path[end]
+	edgesPath = append(edgesPath, e)
+	for e.U != start {
+		e = path[e.U]
+		edgesPath = append(edgesPath, e)
+	}
+	var sum float32
+	for _, edge := range lo.Reverse[*models.Edge[float32]](edgesPath) {
+		weight := converter(edge.Meta["weight"])
+		fmt.Printf("%v %+v> %v\n", cityGraph.VertexAt(edge.U), weight, cityGraph.VertexAt(edge.V))
+		sum += weight
+	}
+	fmt.Printf("Total Weight: %v\n", sum)
 }
