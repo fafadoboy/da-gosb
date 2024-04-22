@@ -4,69 +4,71 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/fafadoboy/da-gosb/internal/chapter2/utils"
+	utilsCh2 "github.com/fafadoboy/da-gosb/internal/chapter2/utils"
 	"github.com/fafadoboy/da-gosb/internal/chapter4/models"
+	"github.com/fafadoboy/da-gosb/internal/chapter4/utils"
 )
 
-func createCityGraph() *models.Graph[models.City] {
-	cityGraph := models.NewGraph(models.SEATTLE, models.SANFRANCISCO, models.LOSANGELES, models.RIVERSIDE, models.PHOENIX, models.CHICAGO, models.BOSTON, models.NEWYORK, models.ATLANTA, models.MIAMI, models.DALLAS, models.HOUSTON, models.DETROIT, models.PHILADELPHIA, models.WASHINGTON)
-	cityGraph.AddEdgeByVertices(models.SEATTLE, models.CHICAGO)
-	cityGraph.AddEdgeByVertices(models.SEATTLE, models.SANFRANCISCO)
-	cityGraph.AddEdgeByVertices(models.SANFRANCISCO, models.RIVERSIDE)
-	cityGraph.AddEdgeByVertices(models.SANFRANCISCO, models.LOSANGELES)
-	cityGraph.AddEdgeByVertices(models.LOSANGELES, models.RIVERSIDE)
-	cityGraph.AddEdgeByVertices(models.LOSANGELES, models.PHOENIX)
-	cityGraph.AddEdgeByVertices(models.RIVERSIDE, models.PHOENIX)
-	cityGraph.AddEdgeByVertices(models.RIVERSIDE, models.CHICAGO)
-	cityGraph.AddEdgeByVertices(models.PHOENIX, models.DALLAS)
-	cityGraph.AddEdgeByVertices(models.PHOENIX, models.HOUSTON)
-	cityGraph.AddEdgeByVertices(models.DALLAS, models.CHICAGO)
-	cityGraph.AddEdgeByVertices(models.DALLAS, models.ATLANTA)
-	cityGraph.AddEdgeByVertices(models.DALLAS, models.HOUSTON)
-	cityGraph.AddEdgeByVertices(models.HOUSTON, models.ATLANTA)
-	cityGraph.AddEdgeByVertices(models.HOUSTON, models.MIAMI)
-	cityGraph.AddEdgeByVertices(models.ATLANTA, models.CHICAGO)
-	cityGraph.AddEdgeByVertices(models.ATLANTA, models.WASHINGTON)
-	cityGraph.AddEdgeByVertices(models.ATLANTA, models.MIAMI)
-	cityGraph.AddEdgeByVertices(models.MIAMI, models.WASHINGTON)
-	cityGraph.AddEdgeByVertices(models.CHICAGO, models.DETROIT)
-	cityGraph.AddEdgeByVertices(models.DETROIT, models.BOSTON)
-	cityGraph.AddEdgeByVertices(models.DETROIT, models.WASHINGTON)
-	cityGraph.AddEdgeByVertices(models.DETROIT, models.NEWYORK)
-	cityGraph.AddEdgeByVertices(models.BOSTON, models.NEWYORK)
-	cityGraph.AddEdgeByVertices(models.NEWYORK, models.PHILADELPHIA)
-	cityGraph.AddEdgeByVertices(models.PHILADELPHIA, models.WASHINGTON)
+func createCityGraph() *models.Graph[models.City, float32] {
+	weight := map[string]float32{"weight": 0.0}
+	cityGraph := models.NewGraph[models.City, float32](models.SEATTLE, models.SANFRANCISCO, models.LOSANGELES, models.RIVERSIDE, models.PHOENIX, models.CHICAGO, models.BOSTON, models.NEWYORK, models.ATLANTA, models.MIAMI, models.DALLAS, models.HOUSTON, models.DETROIT, models.PHILADELPHIA, models.WASHINGTON)
+	cityGraph.AddEdgeByVertices(models.SEATTLE, models.CHICAGO, weight)
+	cityGraph.AddEdgeByVertices(models.SEATTLE, models.SANFRANCISCO, weight)
+	cityGraph.AddEdgeByVertices(models.SANFRANCISCO, models.RIVERSIDE, weight)
+	cityGraph.AddEdgeByVertices(models.SANFRANCISCO, models.LOSANGELES, weight)
+	cityGraph.AddEdgeByVertices(models.LOSANGELES, models.RIVERSIDE, weight)
+	cityGraph.AddEdgeByVertices(models.LOSANGELES, models.PHOENIX, weight)
+	cityGraph.AddEdgeByVertices(models.RIVERSIDE, models.PHOENIX, weight)
+	cityGraph.AddEdgeByVertices(models.RIVERSIDE, models.CHICAGO, weight)
+	cityGraph.AddEdgeByVertices(models.PHOENIX, models.DALLAS, weight)
+	cityGraph.AddEdgeByVertices(models.PHOENIX, models.HOUSTON, weight)
+	cityGraph.AddEdgeByVertices(models.DALLAS, models.CHICAGO, weight)
+	cityGraph.AddEdgeByVertices(models.DALLAS, models.ATLANTA, weight)
+	cityGraph.AddEdgeByVertices(models.DALLAS, models.HOUSTON, weight)
+	cityGraph.AddEdgeByVertices(models.HOUSTON, models.ATLANTA, weight)
+	cityGraph.AddEdgeByVertices(models.HOUSTON, models.MIAMI, weight)
+	cityGraph.AddEdgeByVertices(models.ATLANTA, models.CHICAGO, weight)
+	cityGraph.AddEdgeByVertices(models.ATLANTA, models.WASHINGTON, weight)
+	cityGraph.AddEdgeByVertices(models.ATLANTA, models.MIAMI, weight)
+	cityGraph.AddEdgeByVertices(models.MIAMI, models.WASHINGTON, weight)
+	cityGraph.AddEdgeByVertices(models.CHICAGO, models.DETROIT, weight)
+	cityGraph.AddEdgeByVertices(models.DETROIT, models.BOSTON, weight)
+	cityGraph.AddEdgeByVertices(models.DETROIT, models.WASHINGTON, weight)
+	cityGraph.AddEdgeByVertices(models.DETROIT, models.NEWYORK, weight)
+	cityGraph.AddEdgeByVertices(models.BOSTON, models.NEWYORK, weight)
+	cityGraph.AddEdgeByVertices(models.NEWYORK, models.PHILADELPHIA, weight)
+	cityGraph.AddEdgeByVertices(models.PHILADELPHIA, models.WASHINGTON, weight)
 	return cityGraph
 }
 
-func createCityWeightedGraph() *models.WeightedGraph[models.City] {
-	weightedCityGraph := models.NewWightedGraph(models.SEATTLE, models.SANFRANCISCO, models.LOSANGELES, models.RIVERSIDE, models.PHOENIX, models.CHICAGO, models.BOSTON, models.NEWYORK, models.ATLANTA, models.MIAMI, models.DALLAS, models.HOUSTON, models.DETROIT, models.PHILADELPHIA, models.WASHINGTON)
-	weightedCityGraph.AddEdgeByVertices(models.SEATTLE, models.CHICAGO, 1737)
-	weightedCityGraph.AddEdgeByVertices(models.SEATTLE, models.SANFRANCISCO, 678)
-	weightedCityGraph.AddEdgeByVertices(models.SANFRANCISCO, models.RIVERSIDE, 386)
-	weightedCityGraph.AddEdgeByVertices(models.SANFRANCISCO, models.LOSANGELES, 348)
-	weightedCityGraph.AddEdgeByVertices(models.LOSANGELES, models.RIVERSIDE, 50)
-	weightedCityGraph.AddEdgeByVertices(models.LOSANGELES, models.PHOENIX, 357)
-	weightedCityGraph.AddEdgeByVertices(models.RIVERSIDE, models.PHOENIX, 307)
-	weightedCityGraph.AddEdgeByVertices(models.RIVERSIDE, models.CHICAGO, 1704)
-	weightedCityGraph.AddEdgeByVertices(models.PHOENIX, models.DALLAS, 887)
-	weightedCityGraph.AddEdgeByVertices(models.PHOENIX, models.HOUSTON, 1015)
-	weightedCityGraph.AddEdgeByVertices(models.DALLAS, models.CHICAGO, 805)
-	weightedCityGraph.AddEdgeByVertices(models.DALLAS, models.ATLANTA, 721)
-	weightedCityGraph.AddEdgeByVertices(models.DALLAS, models.HOUSTON, 225)
-	weightedCityGraph.AddEdgeByVertices(models.HOUSTON, models.ATLANTA, 702)
-	weightedCityGraph.AddEdgeByVertices(models.HOUSTON, models.MIAMI, 968)
-	weightedCityGraph.AddEdgeByVertices(models.ATLANTA, models.CHICAGO, 588)
-	weightedCityGraph.AddEdgeByVertices(models.ATLANTA, models.WASHINGTON, 543)
-	weightedCityGraph.AddEdgeByVertices(models.ATLANTA, models.MIAMI, 604)
-	weightedCityGraph.AddEdgeByVertices(models.MIAMI, models.WASHINGTON, 923)
-	weightedCityGraph.AddEdgeByVertices(models.CHICAGO, models.DETROIT, 238)
-	weightedCityGraph.AddEdgeByVertices(models.DETROIT, models.BOSTON, 613)
-	weightedCityGraph.AddEdgeByVertices(models.DETROIT, models.WASHINGTON, 396)
-	weightedCityGraph.AddEdgeByVertices(models.DETROIT, models.NEWYORK, 482)
-	weightedCityGraph.AddEdgeByVertices(models.BOSTON, models.NEWYORK, 190)
-	weightedCityGraph.AddEdgeByVertices(models.NEWYORK, models.PHILADELPHIA, 81)
-	weightedCityGraph.AddEdgeByVertices(models.PHILADELPHIA, models.WASHINGTON, 123)
+func createCityWeightedGraph() *models.Graph[models.City, float32] {
+	weightedCityGraph := models.NewGraph[models.City, float32](models.SEATTLE, models.SANFRANCISCO, models.LOSANGELES, models.RIVERSIDE, models.PHOENIX, models.CHICAGO, models.BOSTON, models.NEWYORK, models.ATLANTA, models.MIAMI, models.DALLAS, models.HOUSTON, models.DETROIT, models.PHILADELPHIA, models.WASHINGTON)
+	weightedCityGraph.AddEdgeByVertices(models.SEATTLE, models.CHICAGO, map[string]float32{"weight": 1737})
+	weightedCityGraph.AddEdgeByVertices(models.SEATTLE, models.SANFRANCISCO, map[string]float32{"weight": 678})
+	weightedCityGraph.AddEdgeByVertices(models.SANFRANCISCO, models.RIVERSIDE, map[string]float32{"weight": 386})
+	weightedCityGraph.AddEdgeByVertices(models.SANFRANCISCO, models.LOSANGELES, map[string]float32{"weight": 348})
+	weightedCityGraph.AddEdgeByVertices(models.LOSANGELES, models.RIVERSIDE, map[string]float32{"weight": 50})
+	weightedCityGraph.AddEdgeByVertices(models.LOSANGELES, models.PHOENIX, map[string]float32{"weight": 357})
+	weightedCityGraph.AddEdgeByVertices(models.RIVERSIDE, models.PHOENIX, map[string]float32{"weight": 307})
+	weightedCityGraph.AddEdgeByVertices(models.RIVERSIDE, models.CHICAGO, map[string]float32{"weight": 1704})
+	weightedCityGraph.AddEdgeByVertices(models.PHOENIX, models.DALLAS, map[string]float32{"weight": 887})
+	weightedCityGraph.AddEdgeByVertices(models.PHOENIX, models.HOUSTON, map[string]float32{"weight": 1015})
+	weightedCityGraph.AddEdgeByVertices(models.DALLAS, models.CHICAGO, map[string]float32{"weight": 805})
+	weightedCityGraph.AddEdgeByVertices(models.DALLAS, models.ATLANTA, map[string]float32{"weight": 721})
+	weightedCityGraph.AddEdgeByVertices(models.DALLAS, models.HOUSTON, map[string]float32{"weight": 225})
+	weightedCityGraph.AddEdgeByVertices(models.HOUSTON, models.ATLANTA, map[string]float32{"weight": 702})
+	weightedCityGraph.AddEdgeByVertices(models.HOUSTON, models.MIAMI, map[string]float32{"weight": 968})
+	weightedCityGraph.AddEdgeByVertices(models.ATLANTA, models.CHICAGO, map[string]float32{"weight": 588})
+	weightedCityGraph.AddEdgeByVertices(models.ATLANTA, models.WASHINGTON, map[string]float32{"weight": 543})
+	weightedCityGraph.AddEdgeByVertices(models.ATLANTA, models.MIAMI, map[string]float32{"weight": 604})
+	weightedCityGraph.AddEdgeByVertices(models.MIAMI, models.WASHINGTON, map[string]float32{"weight": 923})
+	weightedCityGraph.AddEdgeByVertices(models.CHICAGO, models.DETROIT, map[string]float32{"weight": 238})
+	weightedCityGraph.AddEdgeByVertices(models.DETROIT, models.BOSTON, map[string]float32{"weight": 613})
+	weightedCityGraph.AddEdgeByVertices(models.DETROIT, models.WASHINGTON, map[string]float32{"weight": 396})
+	weightedCityGraph.AddEdgeByVertices(models.DETROIT, models.NEWYORK, map[string]float32{"weight": 482})
+	weightedCityGraph.AddEdgeByVertices(models.BOSTON, models.NEWYORK, map[string]float32{"weight": 190})
+	weightedCityGraph.AddEdgeByVertices(models.NEWYORK, models.PHILADELPHIA, map[string]float32{"weight": 81})
+	weightedCityGraph.AddEdgeByVertices(models.PHILADELPHIA, models.WASHINGTON, map[string]float32{"weight": 123})
 	return weightedCityGraph
 }
 
@@ -79,7 +81,7 @@ func TestGraphsNaiveShortestPath(t *testing.T) {
 	cityGraph := createCityGraph()
 	fmt.Println(cityGraph.ToString())
 
-	algo := utils.AlgoSearch[models.City]{}
+	algo := utilsCh2.AlgoSearch[models.City]{}
 	if sol := algo.BFS(models.BOSTON, func(c models.City) bool { return c == models.MIAMI }, cityGraph.NeighborsForVertex); sol != nil {
 		path := sol.ToPath()
 		fmt.Printf("Path from %s to %s:\n%v", models.BOSTON, models.MIAMI, path)
@@ -91,4 +93,14 @@ func TestGraphsNaiveShortestPath(t *testing.T) {
 func TestGraphsShortestPath(t *testing.T) {
 	cityGraph := createCityWeightedGraph()
 	fmt.Println(cityGraph.ToString())
+
+	algo := utils.AlgoGraph[models.City, float32]{}
+	if sol := algo.MST(cityGraph, 0); sol != nil {
+		for _, edge := range sol {
+			fmt.Printf("%v (%v) > %v\n", cityGraph.VertexAt(edge.U), edge.Meta["weight"], cityGraph.VertexAt(edge.V))
+		}
+		// fmt.Printf("Path from %s to %s:\n%v", models.BOSTON, models.MIAMI, path)
+	} else {
+		fmt.Println("No solution found using MST")
+	}
 }
