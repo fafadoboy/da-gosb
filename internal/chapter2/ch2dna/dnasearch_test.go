@@ -4,32 +4,33 @@ import (
 	"fmt"
 	"sort"
 	"testing"
+
+	"github.com/fafadoboy/da-gosb/internal/utils"
 )
 
-func TestLinearContains(t *testing.T) {
-	geneStr := "AGAGCAACCCTGAGATAGTCTGGCTATTTCGCAACTACGCGGTCGAAGGCAATGCAGGGCCTTGCAGTAATAAGGGCAGCCTCTCGGACGAATTAAAACC"
+const geneStr = "AGAGCAACCCTGAGATAGTCTGGCTATTTCGCAACTACGCGGTCGAAGGCAATGCAGGGCCTTGCAGTAATAAGGGCAGCCTCTCGGACGAATTAAAACC"
 
-	myGene := NewGene(geneStr)
-	sort.SliceStable(myGene, func(i, j int) bool {
-		return myGene[i].Compare(myGene[i]) > -1
-	})
-
-	acg := NewCodon('A', 'C', 'G')
-	gat := NewCodon('G', 'A', 'T')
-	fmt.Println(linearContains(myGene, acg))
-	fmt.Println(linearContains(myGene, gat))
-}
-
-func TestBinaryContains(t *testing.T) {
-	geneStr := "AGAGCAACCCTGAGATAGTCTGGCTATTTCGCAACTACGCGGTCGAAGGCAATGCAGGGCCTTGCAGTAATAAGGGCAGCCTCTCGGACGAATTAAAACC"
-
+func newGene() Gene {
 	myGene := NewGene(geneStr)
 	sort.SliceStable(myGene, func(i, j int) bool {
 		return myGene[i].Less(myGene[j])
 	})
+	return myGene
+}
+
+func TestLinearContains(t *testing.T) {
+	myGene := newGene()
 
 	acg := NewCodon('A', 'C', 'G')
 	gat := NewCodon('G', 'A', 'T')
-	fmt.Println(binaryContains(myGene, acg))
-	fmt.Println(binaryContains(myGene, gat))
+	fmt.Println(utils.LinearContains(acg, myGene...))
+	fmt.Println(utils.LinearContains(gat, myGene...))
+}
+
+func TestBinaryContains(t *testing.T) {
+	myGene := newGene()
+	acg := NewCodon('A', 'C', 'G')
+	gat := NewCodon('G', 'A', 'T')
+	fmt.Println(utils.BinaryContains(acg, myGene...))
+	fmt.Println(utils.BinaryContains(gat, myGene...))
 }

@@ -9,7 +9,8 @@ type Clonable interface {
 }
 
 type Comparable interface {
-	Compare(any) (int, error)
+	Compare(Comparable) int
+	Equal(Comparable) bool
 }
 
 type HashableAndClonable interface {

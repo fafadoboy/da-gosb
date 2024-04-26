@@ -1,6 +1,10 @@
 package dnasearch
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/fafadoboy/da-gosb/internal/models"
+)
 
 type Nucleotide int
 
@@ -35,8 +39,10 @@ func (c Codon) value() int {
 	return int(c[0]*100 + c[1]*10 + c[2])
 }
 
-func (c Codon) Compare(other Codon) int {
-	otherSum := other.value()
+func (c Codon) Compare(other models.Comparable) int {
+	otherCodon, _ := other.(Codon)
+
+	otherSum := otherCodon.value()
 	if thisSum := c.value(); thisSum > otherSum {
 		return 1
 	} else if thisSum < otherSum {
@@ -49,7 +55,7 @@ func (c Codon) Less(other Codon) bool {
 	return c.value() < other.value()
 }
 
-func (c Codon) Equal(other Codon) bool {
+func (c Codon) Equal(other models.Comparable) bool {
 	if res := c.Compare(other); res != 0 {
 		return false
 	}
