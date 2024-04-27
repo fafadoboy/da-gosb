@@ -1,6 +1,11 @@
 package utils
 
-import "github.com/fafadoboy/da-gosb/internal/models"
+import (
+	"fmt"
+	"math/rand"
+
+	"github.com/fafadoboy/da-gosb/internal/models"
+)
 
 // Dedup removes duplicate items from a slice based on their hash values.
 // It takes a variable number of items of any type that implements the models.Hashable interface,
@@ -13,7 +18,8 @@ import "github.com/fafadoboy/da-gosb/internal/models"
 //   - deduped []T: A slice containing only the unique items, preserving the order they appear in the original input.
 //
 // Example Usage:
-//   DedupedSlice := Dedup(hashableItems...)
+//
+//	DedupedSlice := Dedup(hashableItems...)
 //
 // This function operates in linear time relative to the number of items, O(n),
 // with respect to both time and space complexity, where n is the number of items in the input slice.
@@ -39,7 +45,8 @@ func Dedup[T models.Hashable](items ...T) (deduped []T) {
 //   - items []T: A single slice containing all the elements from all slices in the map, concatenated in the order they appear.
 //
 // Example Usage:
-//   combinedItems := FlatMap(mapOfSlices)
+//
+//	combinedItems := FlatMap(mapOfSlices)
 //
 // This function is useful for combining data from a grouped or categorized collection into a single list.
 // It operates in linear time relative to the total number of individual items across all slices, O(n),
@@ -49,4 +56,42 @@ func FlatMap[T any](itemsMap map[string][]T) (items []T) {
 		items = append(items, values...)
 	}
 	return
+}
+
+// RandomChoices selects n elements from the provided slice using the given weights.
+// If weights are nil, it assumes uniform distribution.
+func RandomChoices[T any](elements []T, weights []float32, n int) ([]T, error) {
+	if weights != nil && len(elements) != len(weights) {
+		return nil, fmt.Errorf("length of weights must match length of elements")
+	}
+
+	// Initialize the result slice
+	result := make([]T, n)
+
+	// Use the cumulative weight method if weights are provided
+	if weights != nil {
+		cumulativeWeights := make([]float32, len(weights))
+		cumulativeWeights[0] = weights[0]
+		for i := 1; i < len(weights); i++ {
+			cumulativeWeights[i] = cumulativeWeights[i-1] + weights[i]
+		}
+		totalWeight := cumulativeWeights[len(cumulativeWeights)-1]
+
+		for i := 0; i < n; i++ {
+			r := rand.Float32() * totalWeight
+			for j, w := range cumulativeWeights {
+				if r <= w {
+					result[i] = elements[j]
+					break
+				}
+			}
+		}
+	} else {
+		// Select randomly if no weights are provided
+		for i := 0; i < n; i++ {
+			result[i] = elements[rand.Intn(len(elements))]
+		}
+	}
+
+	return result, nil
 }
