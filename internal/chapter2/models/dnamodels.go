@@ -1,4 +1,4 @@
-package dnasearch
+package models
 
 import (
 	"fmt"

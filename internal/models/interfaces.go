@@ -10,7 +10,6 @@ type Clonable interface {
 
 type Comparable interface {
 	Compare(Comparable) int
-	Equal(Comparable) bool
 }
 
 type HashableAndClonable interface {
