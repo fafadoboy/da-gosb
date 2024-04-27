@@ -31,8 +31,7 @@ func (s *SimpleEquation) Crossover(c Chromosome) []Chromosome {
 }
 
 func (s *SimpleEquation) Mutate() {
-	r1 := rand.Float32()
-	r2 := rand.Float32()
+	r1, r2 := rand.Float32(), rand.Float32()
 	switch {
 	case r1 > 0.5 && r2 > 0.5:
 		s.x += 1
