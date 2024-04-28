@@ -1,5 +1,8 @@
 package models
 
-type SelectionType string
+type SelectionType int
 
-const ()
+const (
+	Roulette SelectionType = iota
+	Tournament
+)

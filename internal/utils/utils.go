@@ -1,10 +1,10 @@
 package utils
 
 import (
-	"fmt"
 	"math/rand"
 
 	"github.com/fafadoboy/da-gosb/internal/models"
+	"github.com/samber/lo"
 )
 
 // Dedup removes duplicate items from a slice based on their hash values.
@@ -61,37 +61,62 @@ func FlatMap[T any](itemsMap map[string][]T) (items []T) {
 // RandomChoices selects n elements from the provided slice using the given weights.
 // If weights are nil, it assumes uniform distribution.
 func RandomChoices[T any](elements []T, weights []float32, n int) ([]T, error) {
-	if weights != nil && len(elements) != len(weights) {
-		return nil, fmt.Errorf("length of weights must match length of elements")
-	}
-
 	// Initialize the result slice
 	result := make([]T, n)
 
-	// Use the cumulative weight method if weights are provided
-	if weights != nil {
-		cumulativeWeights := make([]float32, len(weights))
-		cumulativeWeights[0] = weights[0]
-		for i := 1; i < len(weights); i++ {
-			cumulativeWeights[i] = cumulativeWeights[i-1] + weights[i]
-		}
-		totalWeight := cumulativeWeights[len(cumulativeWeights)-1]
-
-		for i := 0; i < n; i++ {
-			r := rand.Float32() * totalWeight
-			for j, w := range cumulativeWeights {
-				if r <= w {
-					result[i] = elements[j]
-					break
-				}
-			}
-		}
-	} else {
-		// Select randomly if no weights are provided
+	// Select randomly if no weights are provided
+	if weights == nil {
 		for i := 0; i < n; i++ {
 			result[i] = elements[rand.Intn(len(elements))]
+		}
+		return result, nil
+	}
+
+	// Otherwise
+	// normalize weights
+	min := lo.Min(weights)
+	if min < 0 {
+		min *= -1
+	}
+	weights = lo.Map(weights, func(item float32, _ int) float32 { return item + min })
+
+	// use the cumulative weight method if weights are provided
+	cumulativeWeights := make([]float32, len(weights))
+	cumulativeWeights[0] = weights[0]
+	for i := 1; i < len(weights); i++ {
+		cumulativeWeights[i] = cumulativeWeights[i-1] + weights[i]
+	}
+	totalWeight := cumulativeWeights[len(cumulativeWeights)-1]
+
+	for i := 0; i < n; i++ {
+		r := rand.Float32() * totalWeight
+		for j, w := range cumulativeWeights {
+			if r <= w {
+				result[i] = elements[j]
+				break
+			}
 		}
 	}
 
 	return result, nil
+}
+
+func Sample[T any](elements []T, k int) []T {
+	if k > len(elements) {
+		k = len(elements)
+	}
+
+	lenElements := len(elements)
+	result := make([]T, 0)
+	setOfIndexes := make(map[int]bool)
+
+	for k > 0 {
+		r := rand.Intn(lenElements)
+		if _, ok := setOfIndexes[r]; !ok {
+			result = append(result, elements[r])
+			setOfIndexes[r] = true
+			k--
+		}
+	}
+	return result
 }
